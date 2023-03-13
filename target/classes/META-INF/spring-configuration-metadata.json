@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "app",
+      "type": "com.huliua.miniprogram.config.AppConfig",
+      "sourceType": "com.huliua.miniprogram.config.AppConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.app-id",
+      "type": "java.lang.String",
+      "sourceType": "com.huliua.miniprogram.config.AppConfig"
+    },
+    {
+      "name": "app.secret",
+      "type": "java.lang.String",
+      "sourceType": "com.huliua.miniprogram.config.AppConfig"
+    }
+  ],
+  "hints": []
+}

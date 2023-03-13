@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    # 启用druid连接池
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:oracle:thin:@172.16.7.161:1521:kfptdb
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: usr_yjszj
+    password: wyjszj##
+    druid:
+      filter:
+        stat:
+          enabled: true
+          slow-sql-millis: 5000 # 慢sql毫秒数
+      stat-view-servlet:
+        enabled: true # 开启监控页面
+        url-pattern: "/druid/*"
+        # 禁用HTML页面上的“Reset All”功能
+        reset-enable: false
+        # 登录名
+        login-username: admin
+        # 登录密码
+        login-password: 123456
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+mybatis-plus:
+  configuration:
+    jdbc-type-for-null: 'null'
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false # 关闭下划线转成驼峰命名

@@ -36,7 +36,8 @@ public class CheckAuthAspect {
         ResponseResult result = null;
         log.info("Signature:{}, Args:{}", proceedingJoinPoint.getSignature(), proceedingJoinPoint.getArgs());
 
-        if (AuthUtils.checkToken(annotation, getRequest())) {
+        // 校验是否有权限
+        if (AuthUtils.checkAuth(annotation, getRequest())) {
             result = (ResponseResult) proceedingJoinPoint.proceed();
         } else {
             result = new ResponseResult();

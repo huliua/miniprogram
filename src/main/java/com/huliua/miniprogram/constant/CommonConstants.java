@@ -13,5 +13,9 @@ public class CommonConstants {
     /**
      * 返回码--出错
      */
-    public static final Integer response_code_error = -1;
+    public static final Integer response_code_error = 500;
+    /**
+     * 返回码--无权限
+     */
+    public static final Integer response_code_forbidden = 403;
 }

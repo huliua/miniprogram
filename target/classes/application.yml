@@ -24,9 +24,15 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  aop:
+    auto: true
 
 mybatis-plus:
   configuration:
     jdbc-type-for-null: 'null'
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: false # 关闭下划线转成驼峰命名
+
+app:
+  app-id: xxxx
+  secret: xxxx

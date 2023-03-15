@@ -21,7 +21,7 @@ public class AuthUtils {
     private static final String SECRET = UUID.randomUUID().toString();
 
     /***
-     * 校验token合法性
+     * 校验权限，用于注解@CheckAuth使用
      * 
      * @param request
      */
@@ -44,6 +44,12 @@ public class AuthUtils {
         return validateAuthByToken(checkAuth.auth(), token);
     }
 
+    /**
+     * 根据token校验用户权限
+     * @param authArr 可访问的权限
+     * @param token token
+     * @return 如果用户的权限满足可访问的权限，返回true；否则返回false
+     */
     private static boolean validateAuthByToken(String[] authArr, String token) {
         if (null == authArr || authArr.length == 0) {
             return true;
@@ -76,6 +82,7 @@ public class AuthUtils {
         user.setUserId(decodedJWT.getClaim("userId").asString());
         user.setUsername(decodedJWT.getClaim("username").asString());
         user.setWid(decodedJWT.getClaim("wid").asString());
+        user.setAuth(decodedJWT.getClaim("auth").asString());
         return user;
     }
 

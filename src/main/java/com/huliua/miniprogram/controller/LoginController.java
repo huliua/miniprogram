@@ -4,6 +4,7 @@ import com.huliua.miniprogram.annotation.CatchException;
 import com.huliua.miniprogram.annotation.CheckAuth;
 import com.huliua.miniprogram.constant.AuthConstants;
 import com.huliua.miniprogram.constant.CommonConstants;
+import com.huliua.miniprogram.entity.BusinessException;
 import com.huliua.miniprogram.entity.ResponseResult;
 import com.huliua.miniprogram.entity.User;
 import com.huliua.miniprogram.service.UserService;
@@ -27,6 +28,7 @@ public class LoginController {
     @Resource
     private UserService userService;
 
+    @CheckAuth
     @ApiOperation(value = "根据用户id获取用户信息", response = ResponseResult.class)
     @GetMapping("getUserById")
     public ResponseResult getUserById(@ApiParam(value = "用户id", required = true) String userId) {
@@ -48,9 +50,16 @@ public class LoginController {
         return result;
     }
 
-    @CheckAuth(auth = {AuthConstants.AUTH_ADMIN, AuthConstants.AUTH_USER})
-    @RequestMapping("/test")
-    public ResponseResult doLogin(User user) throws Exception {
-        throw new Exception("sss");
+    @CheckAuth(needLogin = false)
+    @RequestMapping("/doLogin")
+    public ResponseResult doLogin(User param) throws BusinessException {
+        assert param != null;
+        ResponseResult result = new ResponseResult();
+        // 获取用户信息
+        User user = userService.getUser(param);
+        if (user == null) {
+            throw new BusinessException(CommonConstants.response_code_fail, "登录失败！请检查账号密码是否正确！");
+        }
+        return result;
     }
 }

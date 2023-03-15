@@ -1,6 +1,7 @@
 package com.huliua.miniprogram.aspect;
 
 import com.huliua.miniprogram.constant.CommonConstants;
+import com.huliua.miniprogram.entity.BusinessException;
 import com.huliua.miniprogram.entity.ResponseResult;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -29,6 +30,11 @@ public class CatchExceptionAspect {
         ResponseResult result = null;
         try {
             result = (ResponseResult) proceedingJoinPoint.proceed();
+        } catch (BusinessException ex) {
+            log.error("occur an business exception: ", ex);
+            result = new ResponseResult();
+            result.setMsg(ex.getMessage());
+            result.setCode(ex.getCode());
         } catch (Exception ex) {
             log.error("occur an exception: ", ex);
             result = new ResponseResult();

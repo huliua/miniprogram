@@ -1,27 +1,30 @@
 package com.huliua.miniprogram.aspect;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import com.huliua.miniprogram.annotation.CheckAuth;
 import com.huliua.miniprogram.constant.CommonConstants;
 import com.huliua.miniprogram.entity.ResponseResult;
 import com.huliua.miniprogram.utils.AuthUtils;
-import lombok.extern.log4j.Log4j2;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Aspect
 @Component
 public class CheckAuthAspect {
+
+    @Resource
+    private AuthUtils authUtils;
 
     @Pointcut("@annotation(com.huliua.miniprogram.annotation.CheckAuth)")
     public void pointCut() {}
@@ -37,7 +40,7 @@ public class CheckAuthAspect {
         log.info("Signature:{}, Args:{}", proceedingJoinPoint.getSignature(), proceedingJoinPoint.getArgs());
 
         // 校验是否有权限
-        if (AuthUtils.checkAuth(annotation, getRequest())) {
+        if (authUtils.checkAuth(annotation, getRequest())) {
             result = (ResponseResult) proceedingJoinPoint.proceed();
         } else {
             result = new ResponseResult();

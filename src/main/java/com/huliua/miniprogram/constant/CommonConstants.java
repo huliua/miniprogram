@@ -18,4 +18,5 @@ public class CommonConstants {
      * 返回码--无权限
      */
     public static final Integer response_code_forbidden = 403;
+    public static final String redis_prefix_login = "login:userInfo:";
 }

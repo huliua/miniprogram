@@ -17,5 +17,5 @@ public @interface CheckAuth {
      * 可以访问的权限名
      * @return
      */
-    String[] auth() default {""};
+    String[] auth() default {};
 }

@@ -26,6 +26,17 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
   aop:
     auto: true
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password:
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 32
+        max-idle: 16
+        min-idle: 8
 
 mybatis-plus:
   configuration:

@@ -5,7 +5,7 @@ import com.huliua.miniprogram.entity.User;
 
 public interface UserService {
 
-    public User getUserById(String userId);
+    User getUserById(String userId);
 
     User getUser(User user) throws BusinessException;
 }

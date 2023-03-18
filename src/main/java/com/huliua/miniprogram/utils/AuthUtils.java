@@ -3,29 +3,38 @@ package com.huliua.miniprogram.utils;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.huliua.miniprogram.annotation.CheckAuth;
+import com.huliua.miniprogram.constant.CommonConstants;
 import com.huliua.miniprogram.entity.User;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AuthUtils {
 
     // 签名过期时间
     public static final long EXPIRE_TIME = 60L * 60 * 1000 * 25 * 365;
     // 随机生成密钥
     private static final String SECRET = UUID.randomUUID().toString();
+    @Resource
+    private RedisTemplate redisTemplate;
 
     /***
      * 校验权限，用于注解@CheckAuth使用
      * 
      * @param request
      */
-    public static boolean checkAuth(CheckAuth checkAuth, HttpServletRequest request) {
+    public boolean checkAuth(CheckAuth checkAuth, HttpServletRequest request) {
         // 不用登录，则放行
         if (!checkAuth.needLogin()) {
             return true;
@@ -40,8 +49,16 @@ public class AuthUtils {
             return false;
         }
 
+        // 获取用户信息
+        User user = getUserByToken(token);
+        // 校验redis中token有效期
+        if (!redisTemplate.hasKey(CommonConstants.redis_prefix_login + user.getUserId())) {
+            return false;
+        }
+        // 续期
+        redisTemplate.expire(CommonConstants.redis_prefix_login + user.getUserId(), 60 * 30, TimeUnit.SECONDS);
         // 校验auth
-        return validateAuthByToken(checkAuth.auth(), token);
+        return validateAuth(checkAuth.auth(), user);
     }
 
     /**
@@ -55,6 +72,16 @@ public class AuthUtils {
             return true;
         }
         User user = getUserByToken(token);
+        return validateAuth(authArr, user);
+    }
+
+    private static boolean validateAuth(String[] authArr, User user) {
+        if (authArr.length == 0) {
+            return true;
+        }
+        if (StrUtil.isEmpty(user.getAuth())) {
+            return false;
+        }
         return Arrays.asList(authArr).indexOf(user.getAuth()) >= 0;
     }
 
@@ -95,10 +122,10 @@ public class AuthUtils {
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
             verifier.verify(token);
-            return true;
         } catch (Exception e) {
             return false;
         }
+        return true;
     }
 
     /***
